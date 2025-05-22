@@ -1,5 +1,5 @@
 /node_modules
 /models
-/.env
+.env
 # Sequelize
-/.sequelizerc
+.sequelizerc
