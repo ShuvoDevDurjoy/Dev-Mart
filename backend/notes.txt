@@ -1,0 +1,18 @@
+Things That i am Done With: 
+	1) User Sign Up 👍
+	2) Email Verification 👍
+	3) Reset Password
+	4) User Login
+
+
+For Product Routes
+	1) Adding Product to Database 👍
+	2) Get All the products 👍
+	
+
+
+For Seller Routes
+	1) Seller Sign Up 👍
+	2) Seller Login 👍
+	3) Seller Authentication 👍
+	

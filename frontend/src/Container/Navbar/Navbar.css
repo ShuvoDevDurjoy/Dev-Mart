@@ -1,0 +1,22 @@
+.navbar_main_container{
+    width : 100% ; 
+    height : auto ;
+    max-height : 70px;
+    background-color: black; 
+    color : white;
+    padding : .5rem 2rem;
+    z-index : 100;
+}
+
+
+.logo{
+    padding : var(--padding-type-1);
+    border-radius: 1rem ;
+    box-sizing: border-box;
+    cursor : pointer;
+    border : 1px solid transparent;
+}
+
+.logo:hover{
+    border : 1px solid black;
+}

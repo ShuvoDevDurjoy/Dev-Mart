@@ -1,0 +1,132 @@
+.text_input_main_container, 
+.selection_input_main_container,
+.textarea_input_main_container,
+.file_input_main_container,
+.email_input_main_container,
+.password_input_main_container{
+  padding: 1rem 10px;
+  width: 100%;
+}
+
+.element_input_label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+  white-space: nowrap;
+}
+
+.text_input_container,
+.selection_input_container,
+.single_file_input_container,
+.text_area_input_container,
+.file_input_container,
+.email_input_container,
+.password_input_container{
+    width: 100%;
+    min-width: 200px;
+    padding: 10px;
+    font-family: 'roboto';
+    text-transform: capitalize;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    word-spacing: 2px;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+    color: #555;
+}
+
+.email_input_container,
+.password_input_container{
+  text-transform: none;
+}
+
+.selection_input_container{
+    appearance: none;
+}
+
+.text_area_input_container{
+  text-transform: none;
+  line-height: 1.2rem;
+  height: calc( 1.2rem * 10);
+}
+
+.text_area_input_container:focus{
+  outline: 2px solid rgba(106, 111, 126, 0.78);
+}
+
+.submit_button_container{
+  width: 100%;
+  margin-top: 20px;
+}
+
+.on_submit_button{
+  display: block;
+  width: clamp(300px, 20vw, 500px);
+  padding: 1rem 1rem;
+  border: 0px;
+  outline: none;
+  font-size: 18px;
+  font-weight: 600;
+  margin-inline: auto;
+  transition: .2s linear;
+  cursor: pointer;
+}
+
+
+.on_submit_button:hover{
+  background-color: rgb(105, 218, 255);
+  transition: .2s linear;
+}
+
+.image-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 10px 10px;
+  background-color: white;;
+}
+
+.first-image-row {
+  display: flex;
+  justify-content: center;
+}
+
+.main-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.other-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.other-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.add-btn {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #aaa;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.hidden-input {
+  display: none;
+}

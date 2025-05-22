@@ -1,0 +1,63 @@
+*{
+  padding : 0 ; 
+  margin : 0 ; 
+  box-sizing : border-box ; 
+}
+
+body{
+  width : 100vw ; 
+  height : auto ; 
+   background-color: white; 
+   color : black ;  
+   overflow-x: hidden;
+}
+
+@font-face {
+  font-family: 'roboto';
+  src: url('../src/assets/fonts/roboto.ttf');
+}
+
+@font-face {
+  font-family: 'forum';
+  src: url('../src/assets/fonts/forum.ttf');
+}
+
+:root{
+  --font-type-1 : 'roboto';
+  --font-type-2 : 'forum';
+  --padding-type-1 : .5rem 1.5rem;
+}
+
+.fl{
+  display : flex ; 
+}
+
+.fl_col{
+  display : flex ; 
+  flex-direction: column ;
+}
+
+.al_c{
+  align-items: center;
+}
+
+.ju_c{
+  justify-content: center;
+}
+
+.text_dec_none{
+  text-decoration: none;
+}
+
+li{
+  list-style-type: none;
+}
+
+.ju_sp_bet{
+  justify-content: space-between;
+}
+
+.par_w_h_inh{
+  width : 100% ; 
+  height : 100%;
+}

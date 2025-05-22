@@ -1,0 +1,18 @@
+// const path = require('path');
+
+// module.exports = {
+//   'config': path.resolve('database','config'),
+//   'migrations-path': path.resolve('database', 'migrations'),
+//   'models-path': path.resolve('database', 'models'),
+//   'seeders-path': path.resolve('database', 'seeders'),
+// };
+
+
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve(__dirname, 'config', 'config.cjs'),
+  'migrations-path': path.resolve(__dirname, 'database', 'migrations'),
+  'models-path': path.resolve(__dirname, 'database', 'models'),
+  'seeders-path': path.resolve(__dirname, 'database', 'seeders'),
+};

@@ -1,0 +1,51 @@
+
+<html lang="en">
+  <head>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        padding: 4rem;
+        text-align: center;
+        background-color: white;
+        color: black;
+      }
+      .container {
+        width : calc(100% - 50px);
+        max-width : 500px;
+      }
+      a {
+        display: inline-block;
+        width: calc(90% - 50px);
+        background-color: blue;
+        padding: 1rem 2rem;
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+        font-size : clamp(20px,2vw,25px);
+      }
+
+      .font_type_1 {
+        font-size: clamp(20px, 4vw, 35px);
+        font-weight: 500;
+        padding: 10px;
+      }
+
+      .font_type_2 {
+        font-size: clamp(15px, 3vw, 25px);
+        font-weight: 400;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="font_type_1">Welcome To E Commerce</h1>
+      <h2 class="font_type_2">Click the Button to Reset Your Password</h2>
+      <a href="/">Reset Password</a>
+    </div>
+  </body>
+</html>

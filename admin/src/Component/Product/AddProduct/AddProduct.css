@@ -1,0 +1,27 @@
+.add_product_container{
+    background-color: rgb(169, 182, 248);
+    padding-bottom: 40px;
+}
+
+.add_product_form_input_container{
+    width: 100%;
+}
+
+.el_fl{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex: 1 1 200px;
+    gap: 10px;
+}
+
+.sub_heading{
+    text-align: center;
+    font-family: 'roboto';
+    color: rgb(51, 73, 84);
+}
+
+.pad_bl_10{
+    padding-block: 10px;
+}
