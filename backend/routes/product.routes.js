@@ -79,8 +79,7 @@ product.post("/set_category",
   }
 );
 
-product.post(
-  "/api/v1/set_type",
+product.post("/api/v1/set_type",
   github_upload.single("type_image"),
   checkType,
   githubUpload,
