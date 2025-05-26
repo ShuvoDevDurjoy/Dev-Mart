@@ -495,6 +495,44 @@ const userSignOutHandlder = async (req, res) => {
   }
 };
 
+
+
+
+
+const checkUserIdDB = async(req, res, next)=>{
+  try{
+    //checks if user id is provided or not
+    if(!req.body.user_id){
+      return res.status(400).json({
+        success: false,
+        message: "User Id Not Found"
+      })
+    }
+
+    //check if the user id is in the database and if user is verified
+    const user = await db.Users.findOne({
+      where: {
+        id: req.body.user_id
+      }
+    });
+
+    if(!user || !user.is_verified){
+      return res.status(400).json({
+        success: false,
+        message: "User Have no account or Not verified yet. Please Sign Up or Login!!!"
+      })
+    }
+
+    next();
+
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    })
+  }
+}
+
 export {
   checkIfUserInDB,
   saveUserIntoDb,
@@ -505,4 +543,6 @@ export {
   resetUserPassword,
   validateUserAuthentication,
   userSignOutHandlder,
+
+  checkUserIdDB
 };

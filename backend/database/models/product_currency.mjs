@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize"
+import { DataTypes, Model, UUIDV4 } from "sequelize"
 
 
 export default (sequelize)=>{
@@ -10,7 +10,8 @@ export default (sequelize)=>{
 
     Currency.init({
         currency_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
+            defaultValue: UUIDV4(),
             allowNull: false,
             primaryKey: true,
         },

@@ -2,51 +2,172 @@
 import db from "../../database/models/index.mjs";
 import { v4 as uuidv4 } from "uuid";
 import { __dir } from "../../config/__dir.config.js";
-import { connections } from "../../db/configurations.db.js";
 import product from "../../database/models/product.mjs";
 
-const checkProduct = async (req, res, next) => {
+
+
+//checks if the category name is in database or not
+const checkCategoryNameDB = async (req, res, next) => {
   try {
-    const {
-      product_name,
-      product_category_id,
-      product_type_id,
-      product_description,
-      product_price,
-      product_currency_id,
-      product_available,
-      seller_id,
-    } = req.body;
-
-    const files = req.files;
-
-    const product_images = files.map((file) => {
-      return {
-        filename: file.fieldname,
-        originalname: file.originalname,
-        mimetype: file.mimetype,
-      };
+    //check if category name is already in database or not
+    const existing = await db.ProductCategory.findOne({
+      where: {
+        category_name: req.body.category_name,
+      },
     });
 
-    req.body.product_images = product_images;
-
-    if (
-      !product_name ||
-      !product_category_id ||
-      !product_type_id ||
-      !product_description ||
-      files.length === 0 ||
-      !product_price ||
-      !product_currency_id ||
-      !seller_id ||
-      !product_available
-    ) {
-      return res.send({
-        success: false,
-        product: req.body,
-        message: "Please Fill all the Fields",
+    if (existing) {
+      return res.status(409).json({
+        seccess: false,
+        message: "Category Already Exists",
       });
     }
+
+    next();
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const checkCategoryIdDB = async(req, res, next)=>{
+  try{
+
+    const existing = await db.ProductCategory.findOne({
+      where: {
+        category_id: req.body.category_id
+      }
+    })
+    
+    if(!existing){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Category"
+      })
+    }
+
+    next();
+
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    })
+  }
+}
+
+//save the uploaded category to database 
+const saveCategoryNameDB = async (req, res) => {
+  try {
+    //check if category field is present or not
+    const { category_name, dbGitFileName } = req.body;
+    if (!category_name || !dbGitFileName) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Request",
+      });
+    }
+
+    //if category field is present
+    const categoryDb = await db.ProductCategory.create({
+      category_name: category_name,
+      category_image_link: dbGitFileName,
+    });
+
+    if (!categoryDb) {
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+
+    const io = req.app.get("io");
+
+    const categoryAttributes = await db.ProductCategory.findAll({
+      attributes: ["category_id", "category_name"],
+      include: [
+        {
+          model: db.ProductType,
+          as: "product_type",
+          attributes: ["product_type_id", "type_name"],
+        },
+      ],
+    });
+
+    await io.emit("new-category", categoryAttributes);
+
+    return res.status(200).json({
+      success: true,
+      message: "Successfull",
+    });
+  } catch (e) {
+
+    if (e.name === "SequelizeUniqueConstraintError") {
+    return res.status(409).json({
+      success: false,
+      message: "Category Already Exists"
+    });
+  }
+    return res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+
+//checks type name if this is in database or not
+const checkTypeNameDB = async(req, res, next)=>{
+  try{
+    //if type name is not null check if type name is already in database or not
+
+    const existing = await db.ProductType.findOne({
+      where: {
+        type_name: req.body.type_name,
+      },
+    });
+
+    if (existing) {
+      return res.status(209).json({
+        success: false,
+        message: "Type Already Exists",
+      });
+    }
+
+    next();
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      messag: "Internal Server Error"
+    })
+  }
+}
+
+//saves new type name in database
+const saveTypeDb = async (req, res, next) => {
+  try {
+    const { type_name, category_id, dbGitFileName } = req.body;
+
+    const type = await db.ProductType.create({
+      product_type_id: uuidv4(),
+      type_name: type_name,
+      type_image: dbGitFileName,
+      category_id: category_id,
+      type_link: "/",
+    });
+
+    if (!type) {
+      return res.stauts(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+
+    type.type_link = `/product/get_type/${type.product_type_id}`
+    await type.save();
+
     next();
   } catch (e) {
     return res.send({
@@ -55,6 +176,7 @@ const checkProduct = async (req, res, next) => {
     });
   }
 };
+
 
 const checkProductCredentials = async (req, res, next) => {
   try {
@@ -336,90 +458,10 @@ const retrieveProductFromDatabase = async (req, res) => {
   }
 };
 
-const checkCategory = async (req, res, next) => {
-  try {
-    const { category_name } = req.body;
-    //check if category name is null or not
-    if (!category_name) {
-      return res.send({
-        success: false,
-        message: "Please Fill All The Fields",
-      });
-    }
 
-    //check if category name is already in database or not
-    const existing = await db.ProductCategory.findOne({
-      where: {
-        category_name: category_name,
-      },
-    });
 
-    if (existing) {
-      return res.send({
-        seccess: false,
-        message: "Category Already Exists",
-      });
-    }
 
-    next();
-  } catch (e) {
-    console.log(e);
-    return res.send({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
 
-const saveCategoryDb = async (req, res) => {
-  try {
-    //check if category field is present or not
-    const { category_name, dbGitFileName } = req.body;
-    if (!category_name || !dbGitFileName) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Request",
-      });
-    }
-
-    //if category field is present
-    const categoryDb = await db.ProductCategory.create({
-      category_name: category_name,
-      category_image_link: dbGitFileName,
-    });
-
-    if (!categoryDb) {
-      return res.status(500).json({
-        success: false,
-        message: "Internal Server Error",
-      });
-    }
-
-    const io = req.app.get("io");
-
-    const categoryAttributes = await db.ProductCategory.findAll({
-      attributes: ["category_id", "category_name"],
-      include: [
-        {
-          model: db.ProductType,
-          as: "product_type",
-          attributes: ["product_type_id", "type_name"],
-        },
-      ],
-    });
-
-    await io.emit("new-category", categoryAttributes);
-
-    return res.status(200).json({
-      success: true,
-      message: "Successfull",
-    });
-  } catch (e) {
-    return res.status(400).json({
-      success: false,
-    });
-  }
-};
 
 const getCategoryWithProduct = async (req, res) => {
   try {
@@ -453,69 +495,8 @@ const getCategoryWithProduct = async (req, res) => {
   }
 };
 
-const checkType = async (req, res, next) => {
-  try {
-    const { type_name, category_id } = req.body;
 
-    //check if type name or category_id is null or not
-    if (type_name === null || category_id === null) {
-      return res.send({
-        success: false,
-        message: "Please Fill All The Fields",
-      });
-    }
 
-    //if type name is not null check if type name is already in database or not
-
-    const existing = await db.ProductType.findOne({
-      where: {
-        type_name: type_name,
-      },
-    });
-
-    if (existing) {
-      return res.send({
-        success: false,
-        message: "Type Already Exists",
-      });
-    }
-
-    next();
-  } catch (e) {
-    return res.send({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
-
-const saveTypeDb = async (req, res, next) => {
-  try {
-    const { type_name, category_id, dbGitFileName } = req.body;
-
-    const type = await db.ProductType.create({
-      product_type_id: uuidv4(),
-      type_name: type_name,
-      type_image: dbGitFileName,
-      category_id: category_id,
-      type_link: "/",
-    });
-
-    if (!type) {
-      return res.json({
-        success: false,
-        message: "Internal Server Error",
-      });
-    }
-
-    next();
-  } catch (e) {
-    return res.send({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
 
 const checkDatabaseCredentials = async (
   tablename,
@@ -728,7 +709,7 @@ const getCategory = async(req, res)=>{
       as: 'product_type',
     },
   });
-  res.json({ success: true, data: categories });
+  return res.status(200).json({ success: true, data: categories });
 }
 
 const getCategoryWithId = async(req, res)=>{
@@ -758,18 +739,18 @@ const getCategoryWithId = async(req, res)=>{
 }
 
 export {
-  checkProduct,
   checkProductCredentials,
   uploadProductDb,
   retrieveProductFromDatabase,
 
   //controller related to setting up category
-  checkCategory,
-  saveCategoryDb,
+  checkCategoryNameDB,
+  checkCategoryIdDB,
+  saveCategoryNameDB,
   getCategoryWithProduct,
 
   //controller related to setting up type
-  checkType,
+  checkTypeNameDB,
   saveTypeDb,
   checkdbProduct,
 

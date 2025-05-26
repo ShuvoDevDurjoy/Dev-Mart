@@ -18,6 +18,7 @@ export default (sequelize)=>{
         },
         category_name: {
             type : DataTypes.STRING(30),
+            unique: true,
             allowNull : false,
         },
         category_image_link: {

@@ -45,6 +45,7 @@ const checkIfSellerInDB = async (req, res, next) => {
 
     next();
   } catch (e) {
+    console.log(e)
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -106,7 +107,7 @@ const validateSeller = async (req, res, next) => {
         },
         {
           where: {
-            email: req.body.email,
+            seller_email: req.body.email,
           },
         }
       );
@@ -125,6 +126,7 @@ const validateSeller = async (req, res, next) => {
       message: "Please Check Mail To Verify it's You",
     });
   } catch (e) {
+    console.log(e)
     return res.status(500).json({
       success: false,
       message: "Internal Server Failure",

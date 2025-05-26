@@ -6,30 +6,10 @@ import {
 import path from "path";
 import axios from "axios";
 import { v4 as uuid } from 'uuid'
-import { checkCategory, saveCategoryDb } from "../controllers/User/product.controller.js";
 
 const test = Router();
 
 
-
-
-
-
-
-
-
-// test.get('/order',async(req,res,next)=>{
-//   console.log("order received");
-//   next();
-// }, checkOrder, orderDbUpload);
-
-
-
-
-test.get('/get_category_name_with_type', );
-
-
-
-
+test.get('/get_product',checkProductId, checkProductIdDB, returnProduct);
 
 export { test };

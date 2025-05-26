@@ -3,13 +3,6 @@ import fs from "fs";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { __dir } from "../config/__dir.config.js";
-import { connections } from "../db/configurations.db.js";
-import {
-  removeProductFromDatabaseQuery,
-  removeProductImageFromLocalDirectoryQuery,
-  retrieveProductFromDatabaseQuery,
-  savingProductQuery,
-} from "../config/db.config.js";
 import { v4 as uuidv4 } from "uuid";
 
 import db from "../database/models/index.mjs";
@@ -17,6 +10,118 @@ import { Console } from "console";
 
 
 
+//checks if the category name is given in request or not 
+const checkCategoryName = async(req, res, next)=>{
+  try{
+    const {category_name} = req.body;
+    //check if category name is null or not
+    if (!category_name) {
+      return res.send({
+        success: false,
+        message: "Please Fill All The Fields",
+      });
+    }
+    next();
+
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    })
+  }
+}
+
+//checks category_id
+const checkCategoryId = async(req, res, next)=>{
+  try{
+
+    const {category_id} = req.body;
+    //check if category name is null or not
+    if (!category_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Please Fill All The Fields",
+      });
+    }
+    next();
+
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    })
+  }
+}
+
+//check if the product type is given in request or not
+const checkTypeName = async(req, res, next)=>{
+  try{
+    if(!req.body.type_name){
+      return res.status(400).json({
+        success: false,
+        message: "Please Fill Out all the Fields"
+      })
+    }
+    next();
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    })
+  }
+}
+
+
+const checkProduct = async (req, res, next) => {
+  try {
+    const {
+      product_name,
+      product_category_id,
+      product_type_id,
+      product_description,
+      product_price,
+      product_currency_id,
+      product_available,
+      seller_id,
+    } = req.body;
+
+    const files = req.files;
+
+    const product_images = files.map((file) => {
+      return {
+        filename: file.fieldname,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+      };
+    });
+
+    req.body.product_images = product_images;
+
+    if (
+      !product_name ||
+      !product_category_id ||
+      !product_type_id ||
+      !product_description ||
+      files.length === 0 ||
+      !product_price ||
+      !product_currency_id ||
+      !seller_id ||
+      !product_available
+    ) {
+      return res.send({
+        success: false,
+        product: req.body,
+        message: "Please Fill all the Fields",
+      });
+    }
+    next();
+  } catch (e) {
+    return res.send({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 
 const githubUpload = async (req, res, next) => {
@@ -241,6 +346,10 @@ const checkProductId = async(req, res, next)=>{
 }
 
 export {
+  checkCategoryName,
+  checkCategoryId,
+  checkTypeName,
+  checkProduct,
   githubUpload,
   saveProductImageLocally,
   productDbUpload,

@@ -39,25 +39,19 @@ const checkSellerAuthToken = async(req, res, next)=>{
     if(!token){
       return res.status(400).json({
         success: false,
-        message: "Token is not given"
+        message: "Token is not valid"
       })
     }
     //if the token is there then verify the token
     const result = await verify_token(token, process.env.JWT_SELLER_SECRET);
 
-    if(!result.success){
+    if(!result.success || !result.seller_email){
       return res.status(400).json({
         success: false,
         message: "Token is no longer valid"
       })
     }
 
-    if(!result.seller_email){
-      return res.status(400).json({
-        success: false,
-        message: "Token is no longer valid"
-      })
-    }
     req.body.seller_email = result.seller_email;
     
     next();

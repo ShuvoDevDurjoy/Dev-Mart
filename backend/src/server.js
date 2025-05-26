@@ -13,7 +13,7 @@ import admin from '../routes/admin.routes.js'
 import seller from '../routes/seller.routes.js'
 import path from 'path'
 import {Server} from 'socket.io'
-import { test } from '../routes/test.routes.js'
+// import { test } from '../routes/test.routes.js'
 
 
 dotenv.config();
@@ -79,9 +79,7 @@ app.use('/admin',admin);
 
 app.use('/product',product);
 
-app.use('/api',orders);
-
-app.use('/test', test);
+app.use('/orders',orders);
 
 server.listen(process.env.PORT,()=>{
     try{

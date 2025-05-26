@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { ProductImageSaving, github_upload } from "../config/multer.config.js";
 import {
+  checkCategoryId,
+  checkCategoryName,
   checkProductId,
+  checkTypeName,
   githubUpload,
+  checkProduct,
   productDbUpload,
   removingProductFromDatabase,
   removingProductFromStaticDirectory,
@@ -12,24 +16,23 @@ import {
 } from "../middleware/product.middleware.js";
 import axios from "axios";
 import { __dir } from "../config/__dir.config.js";
-import { connections } from "../db/configurations.db.js";
 import { removeAllProductFromDatabaseQuery } from "../config/db.config.js";
 import path from "path";
 import fs from "fs";
 import db from "../database/models/index.mjs";
 import { githubMultipleUpload } from "../utils/githubImageSave.js";
 import {
-  checkCategory,
+  checkCategoryIdDB,
+  checkCategoryNameDB,
   checkCurrency,
   checkdbProduct,
-  checkProduct,
   checkProductCredentials,
-  checkType,
+  checkTypeNameDB,
   getAll,
   getCategory,
   getCategoryWithId,
   retrieveProductFromDatabase,
-  saveCategoryDb,
+  saveCategoryNameDB,
   saveTypeDb,
   uploadProductDb,
 } from "../controllers/User/product.controller.js";
@@ -37,6 +40,42 @@ import { checkSellerAuthToken } from "../middleware/authSeller.middleware.js";
 import { dbSellerVerification } from "../controllers/User/seller.controller.js";
 
 const product = Router();
+
+
+//save product category to database
+product.post("/set_category",
+  github_upload.single("category_image"),
+  checkSellerAuthToken,
+  dbSellerVerification,
+  checkCategoryName,
+  checkCategoryNameDB,
+  githubUpload,
+  saveCategoryNameDB,
+  (req, res)=>{
+    return res.status(201).json({
+      success: true,
+      message: "Category Upload Successfull"
+    })
+  }
+);
+
+//save product type to database
+product.post('/add_type',
+  github_upload.single('type_image'),
+  checkSellerAuthToken,
+  dbSellerVerification,
+  checkTypeName,
+  checkTypeNameDB,
+  checkCategoryId,
+  checkCategoryIdDB,
+  githubUpload,
+  saveTypeDb,
+  (req, res)=>{
+  return res.status(200).json({
+    success: true,
+    message: "Product Type Upload Successfull"
+  })
+});
 
 //adding product to the database
 product.post(
@@ -56,41 +95,20 @@ product.post(
   }
 );
 
-product.post("/set_category",
-  github_upload.single("category_image"),
-  checkSellerAuthToken,
-  dbSellerVerification,
-  checkCategory,
-  githubUpload,
-  saveCategoryDb,
-  async (req, res) => {
-    try {
-      return res.send({
-        success: true,
-        message: "Category Upload Successfull",
-      });
-    } catch (e) {
-      console.log("Error with decoding image");
-      return res.send({
-        success: false,
-        message: "Server Failed",
-      });
-    }
-  }
-);
 
-product.post("/api/v1/set_type",
-  github_upload.single("type_image"),
-  checkType,
-  githubUpload,
-  saveTypeDb,
-  async (req, res) => {
-    return res.send({
-      success: true,
-      message: "Type Upload Successfull",
-    });
-  }
-);
+
+// product.post("/api/v1/set_type",
+//   github_upload.single("type_image"),
+//   checkType,
+//   githubUpload,
+//   saveTypeDb,
+//   async (req, res) => {
+//     return res.send({
+//       success: true,
+//       message: "Type Upload Successfull",
+//     });
+//   }
+// );
 
 product.get(
   "/get_product",
@@ -98,19 +116,7 @@ product.get(
 )
 
 
-product.post('/add_type',
-  github_upload.single('type_image'),
-  checkSellerAuthToken,
-  dbSellerVerification,
-  checkType,
-  githubUpload,
-  saveTypeDb,
-  (req, res)=>{
-  return res.status(200).json({
-    success: true,
-    message: "Product Upload Successful"
-  })
-});
+
 
 //getting all the products from database
 product.get("/api/product_all", retrieveProductFromDatabase);

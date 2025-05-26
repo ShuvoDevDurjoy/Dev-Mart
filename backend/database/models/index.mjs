@@ -20,10 +20,15 @@ const dbConfig = config[env];
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
   host: dbConfig.host,
   dialect: dbConfig.dialect,
+  dialectOptions: {
+    family: 4
+  },
   logging : false
 });
 
-// sequelize.sync({alter : true}).then(()=>{
+
+
+// sequelize.sync({force : true}).then(()=>{
 //   console.log("synced successfully");
 // }).catch(e=>{
 //   console.log("sync is not done sucessfully",e.message);
